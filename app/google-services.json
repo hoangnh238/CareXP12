@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "502903220360",
+    "firebase_url": "https://carexp1-9dab2.firebaseio.com",
+    "project_id": "carexp1-9dab2",
+    "storage_bucket": "carexp1-9dab2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:502903220360:android:d3c3a6d94d08be7a",
+        "android_client_info": {
+          "package_name": "com.example.hoang_000.carexp1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "502903220360-l797c4qke9fq6prdp4qn0suaa6kof1b1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.hoang_000.carexp1",
+            "certificate_hash": "7897a83b4c398cfaae4b156ce6f351b027a7e1d0"
+          }
+        },
+        {
+          "client_id": "502903220360-jabt9rs5h692koo0cvbq9q36hvbjcn2k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA333ltjvyT5mupbdHQ11T7aRX0S8eOiGM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "502903220360-jabt9rs5h692koo0cvbq9q36hvbjcn2k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

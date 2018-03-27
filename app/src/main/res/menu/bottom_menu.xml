@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <item
+        android:id="@+id/action_market"
+        android:enabled="true"
+        android:title="Market"
+        android:icon="@drawable/ic_shopping_cart_black_24dp"
+        app:showAsAction="ifRoom"
+        />
+    <item
+        android:id="@+id/action_garage"
+        android:enabled="true"
+        android:title="Garage"
+        android:icon="@drawable/ic_directions_car_black_24dp"
+        app:showAsAction="ifRoom"
+        />
+    <item
+        android:id="@+id/action_hospital"
+        android:enabled="true"
+        android:title="Hospital"
+        android:icon="@drawable/ic_local_hospital_black_24dp"
+        app:showAsAction="ifRoom"
+
+        />
+    <item
+        android:id="@+id/action_gas"
+        android:enabled="true"
+        android:title="Gas_Station"
+        android:icon="@drawable/ic_local_gas_station_black_24dp"
+        app:showAsAction="ifRoom"
+        />
+</menu>

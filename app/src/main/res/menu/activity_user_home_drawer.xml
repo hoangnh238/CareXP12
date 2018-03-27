@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_info"
+            android:icon="@drawable/ic_info_black_24dp"
+            android:title="CAR INFORMATION" />
+        <item
+            android:id="@+id/nav_help"
+            android:icon="@drawable/ic_help_black_24dp"
+
+            android:title="QUESTIONS" />
+
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/ic_dehaze_black_24dp"
+            android:title="ABOUT" />
+        <item
+            android:id="@+id/nav_hotline"
+            android:icon="@drawable/ic_call"
+
+            android:title="HOTLINE" />
+        <item
+            android:id="@+id/nav_fanpage"
+            android:icon="@drawable/ic_fb"
+
+            android:title="FANPAGE" />
+        <item
+            android:id="@+id/nav_update_info"
+            android:icon="@drawable/ic_update_black_24dp"
+            android:title="UPDATE INFORMATION" />
+        <item
+           android:id="@+id/nav_change_pwd"
+          android:icon="@drawable/ic_change_history_black_24dp"
+           android:title="CHANGE PASSWORD" />
+
+
+        <item
+            android:id="@+id/nav_signout"
+            android:icon="@drawable/ic_power_settings_new_black_24dp"
+
+            android:title="SIGN OUT" />
+
+    </group>
+
+
+
+</menu>
