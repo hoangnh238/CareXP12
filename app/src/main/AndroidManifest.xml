@@ -48,6 +48,7 @@
             android:label="@string/title_activity_user_home"
             android:theme="@style/AppTheme"></activity>
         <activity android:name=".ViewPlace"></activity>
+
     </application>
 
 </manifest>

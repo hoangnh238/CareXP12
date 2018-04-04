@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
@@ -98,7 +99,7 @@ public class UserHome extends AppCompatActivity
     private static int FATEST_INERVAL = 3000;   //5S
     private static int DISPLACEMENT = 10;   //5S
     public static final int PICK_IMAGE_REQUEST=9999;
-    public static User currentUser;
+    public static User currentUser= new User();
 
     private static final int MY_PERMISSION_CODE = 1000;
 
@@ -150,8 +151,8 @@ public class UserHome extends AppCompatActivity
                     case R.id.action_hospital:
                         nearByPlace("hospital");
                         break;
-                    case R.id.action_market:
-                        nearByPlace("supermarket");
+                    case R.id.action_carwash:
+                        nearByPlace("car_wash");
                         break;
                     default: break;
                 }
@@ -173,19 +174,18 @@ public class UserHome extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         View navigationHeaderView = navigationView.getHeaderView(0);
-        TextView txtname= (TextView)navigationHeaderView.findViewById(R.id.txtUserName);
-        CircleImageView imgavatar=(CircleImageView)navigationHeaderView.findViewById(R.id.image_avatar);
+        TextView txtname= navigationHeaderView.findViewById(R.id.txtUserName);
+       // txtname.setText(String.format("%s",currentUser.getName()));
+        CircleImageView imgavatar=navigationHeaderView.findViewById(R.id.image_avatar);
 
 
 
- /*  txtname.setText(currentUser.getName());
-
-      if(currentUser.getAvatarUrl()!=null
-              &&!TextUtils.isEmpty(currentUser.getAvatarUrl()))
+    //txtname.setText(currentUser.getName());
+        if(currentUser.getAvatarUrl()!=null &&!TextUtils.isEmpty(currentUser.getAvatarUrl()))
       {
           Picasso.with(this)
               .load(currentUser.getAvatarUrl())
-                .into(imgavatar);}*/
+                .into(imgavatar);}
 
 
         //Geo Fire
@@ -226,7 +226,7 @@ public class UserHome extends AppCompatActivity
                                 else if (placeType.equals("hospital"))
                                     markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
                                     //   Common.currentResult.getRating();
-                                else if (placeType.equals("supermarket"))
+                                else if (placeType.equals("car_wash"))
                                     markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
                                 else
                                     markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
@@ -237,7 +237,7 @@ public class UserHome extends AppCompatActivity
                                 mMap.addMarker(markerOptions);
                                 //Move camera
                                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                                mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+                                mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
                             }
                         }
                     }
@@ -252,7 +252,7 @@ public class UserHome extends AppCompatActivity
     private String getUrl(double latitude, double longitude, String placeType){
         StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/textsearch/json");
         googlePlacesUrl.append("?location="+latitude+","+longitude);
-        googlePlacesUrl.append("&radius="+20000);
+        googlePlacesUrl.append("&radius="+10000);
         googlePlacesUrl.append("&type="+placeType);
         googlePlacesUrl.append("&sensor=true");
         googlePlacesUrl.append("&key="+getResources().getString(R.string.browser_key));
@@ -358,6 +358,15 @@ public class UserHome extends AppCompatActivity
         }
         else if (id == R.id.nav_hotline) {
             showhotline();
+
+        }
+        else if (id == R.id.nav_khuyenmai) {
+
+
+        }
+        else if (id == R.id.nav_binhluan) {
+
+
         }
         else if (id == R.id.nav_fanpage) {
             intentUrl("https://www.facebook.com/Drive-Tracker-161475257940058/");
@@ -370,8 +379,8 @@ public class UserHome extends AppCompatActivity
 
     private void showCarInfo() {
         AlertDialog.Builder aleartDialog= new AlertDialog.Builder(UserHome.this);
-        aleartDialog.setTitle("CAR INFORMATION");
-        aleartDialog.setMessage("please fill all information");
+        aleartDialog.setTitle("Thông tin xe");
+        //aleartDialog.setMessage("Vui lòng nhập các thông tin về xe của bạn");
 
         LayoutInflater inflater = this.getLayoutInflater();
         View layout_car=inflater.inflate(R.layout.layout_car_information,null);
@@ -379,6 +388,10 @@ public class UserHome extends AppCompatActivity
         final MaterialEditText edtdongxe=(MaterialEditText)layout_car.findViewById(R.id.edtdongxe);
         final MaterialEditText edt_ngay_mua=(MaterialEditText)layout_car.findViewById(R.id.edt_ngay_mua);
         final MaterialEditText edt_mieuta=(MaterialEditText)layout_car.findViewById(R.id.edt_mieuta);
+        final MaterialEditText edt_phienban=(MaterialEditText)layout_car.findViewById(R.id.edtphienban);
+        final MaterialEditText edt_doixe=(MaterialEditText)layout_car.findViewById(R.id.edtdoixe);
+
+
 
 
 
@@ -387,7 +400,7 @@ public class UserHome extends AppCompatActivity
         aleartDialog.setView(layout_car);
 
         //set button
-        aleartDialog.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+        aleartDialog.setPositiveButton("Lưu", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
@@ -398,6 +411,9 @@ public class UserHome extends AppCompatActivity
                 String dongxe = edtdongxe.getText().toString();
                 String ngaymua = edt_ngay_mua.getText().toString();
                 String mieuta = edt_mieuta.getText().toString();
+                String phienban = edt_phienban.getText().toString();
+                String doixe = edt_doixe.getText().toString();
+
 
                 Map<String,Object>updateInfo=new HashMap<>();
                 if (!TextUtils.isEmpty(tenxe))
@@ -408,6 +424,10 @@ public class UserHome extends AppCompatActivity
                     updateInfo.put("Zngaymua",ngaymua);
                 if (!TextUtils.isEmpty(mieuta))
                     updateInfo.put("Zmieuta",mieuta);
+                if (!TextUtils.isEmpty(phienban))
+                    updateInfo.put("Zphienban",phienban);
+                if (!TextUtils.isEmpty(doixe))
+                    updateInfo.put("Zdoixe",doixe);
 
 
                 DatabaseReference userInformation =FirebaseDatabase.getInstance().getReference("Users");
@@ -417,16 +437,16 @@ public class UserHome extends AppCompatActivity
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful())
-                                    Toast.makeText(UserHome.this, "Information Updated", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(UserHome.this, "Thông tin đã được cật nhập", Toast.LENGTH_SHORT).show();
                                 else
-                                    Toast.makeText(UserHome.this, "Information Updated Failed", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(UserHome.this, "Lỗi cật nhật thông tin", Toast.LENGTH_SHORT).show();
                                 waitingDialog.dismiss();
                             }
                         });
 
             }
         });
-        aleartDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+        aleartDialog.setNegativeButton("Thoát", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int which) {
                 dialogInterface.dismiss();
@@ -444,13 +464,13 @@ public class UserHome extends AppCompatActivity
 
     private void showhotline() {
         AlertDialog.Builder aleartDialog= new AlertDialog.Builder(UserHome.this);
-        aleartDialog.setTitle("HOTLINE");
+        aleartDialog.setTitle("Đường dây nóng");
         aleartDialog.setMessage("01655907238");
 
         LayoutInflater inflater = this.getLayoutInflater();
 
 
-        aleartDialog.setPositiveButton("CALL", new DialogInterface.OnClickListener() {
+        aleartDialog.setPositiveButton("GỌI", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -484,8 +504,8 @@ public class UserHome extends AppCompatActivity
     private void showhelp() {
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                 "mailto","huyhoangvp96@gmail.com", null));
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Question&Commend");
-        emailIntent.putExtra(Intent.EXTRA_TEXT, "Question and Commend : \n");
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Thắc mắc cần giải đáp");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, "Câu hỏi là : \n");
         startActivity(Intent.createChooser(emailIntent, "Send email..."));
 
 
@@ -493,8 +513,8 @@ public class UserHome extends AppCompatActivity
 
     private void showDialogUpdateInfo() {
         AlertDialog.Builder aleartDialog= new AlertDialog.Builder(UserHome.this);
-        aleartDialog.setTitle("UPDATE INFORMATION");
-        aleartDialog.setMessage("please fill all information");
+        aleartDialog.setTitle("Cập nhật thông tin các nhân");
+        aleartDialog.setMessage("Vui lòng nhập thông tin cá nhân bạn cần cập nhật");
 
         LayoutInflater inflater = this.getLayoutInflater();
         View layput_pwd=inflater.inflate(R.layout.layout_update_information,null);
@@ -511,7 +531,7 @@ public class UserHome extends AppCompatActivity
         aleartDialog.setView(layput_pwd);
 
         //set button
-        aleartDialog.setPositiveButton("UPDATE", new DialogInterface.OnClickListener() {
+        aleartDialog.setPositiveButton("Cập nhật", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
@@ -532,16 +552,16 @@ public class UserHome extends AppCompatActivity
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful())
-                                    Toast.makeText(UserHome.this, "Information Updated", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(UserHome.this, "Thông tin đã được cập nhật", Toast.LENGTH_LONG).show();
                                 else
-                                    Toast.makeText(UserHome.this, "Information Updated Failed", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(UserHome.this, "Lỗi cập nhật thông tin", Toast.LENGTH_LONG).show();
                                 waitingDialog.dismiss();
                             }
                         });
 
             }
         });
-        aleartDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+        aleartDialog.setNegativeButton("Thoát", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int which) {
                 dialogInterface.dismiss();
@@ -593,9 +613,9 @@ public class UserHome extends AppCompatActivity
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if(task.isSuccessful())
-                                                            Toast.makeText(UserHome.this, "Uploaded", Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(UserHome.this, "Đã tải lên", Toast.LENGTH_LONG).show();
                                                         else
-                                                            Toast.makeText(UserHome.this, "Uploade Error", Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(UserHome.this, "Lỗi tải lên", Toast.LENGTH_LONG).show();
                                                     }
                                                 });
                                     }
@@ -616,8 +636,8 @@ public class UserHome extends AppCompatActivity
 
     private void showDialogChangePassWord() {
         AlertDialog.Builder aleartDialog= new AlertDialog.Builder(UserHome.this);
-        aleartDialog.setTitle("CHANGE PASSWORD");
-        aleartDialog.setMessage("please fill all information");
+        aleartDialog.setTitle("Thay đổi mật khẩu");
+        aleartDialog.setMessage("Vui lòng nhập đầy đủ thông tin");
 
         LayoutInflater inflater = this.getLayoutInflater();
         View layput_pwd=inflater.inflate(R.layout.layout_change_pwd,null);
@@ -627,7 +647,7 @@ public class UserHome extends AppCompatActivity
         aleartDialog.setView(layput_pwd);
 
         //set button
-        aleartDialog.setPositiveButton("CHANGE PASSWORD", new DialogInterface.OnClickListener() {
+        aleartDialog.setPositiveButton("Thay đổi", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 final AlertDialog waitingDialog= new SpotsDialog(UserHome.this);
@@ -660,9 +680,9 @@ public class UserHome extends AppCompatActivity
                                                                         @Override
                                                                         public void onComplete(@NonNull Task<Void> task) {
                                                                             if(task.isSuccessful())
-                                                                                Toast.makeText(UserHome.this, "password was changed", Toast.LENGTH_SHORT).show();
+                                                                                Toast.makeText(UserHome.this, "Đã thay đổi mật khẩu", Toast.LENGTH_LONG).show();
                                                                             else
-                                                                                Toast.makeText(UserHome.this, "password was changed but dont updatedatabase", Toast.LENGTH_SHORT).show();
+                                                                                Toast.makeText(UserHome.this, "Đã thay đổi nhưng không cật nhật lên cơ sở dữ liệu", Toast.LENGTH_LONG).show();
 
                                                                             waitingDialog.dismiss();
 
@@ -671,7 +691,7 @@ public class UserHome extends AppCompatActivity
                                                         }
                                                         else
                                                         {
-                                                            Toast.makeText(UserHome.this, "Password doesnt change", Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(UserHome.this, "Mật khẩu không được thay đổi", Toast.LENGTH_LONG).show();
                                                         }
                                                     }
                                                 });
@@ -679,7 +699,7 @@ public class UserHome extends AppCompatActivity
                                     else
                                     {
                                         waitingDialog.dismiss();
-                                        Toast.makeText(UserHome.this, "Wrong old password", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(UserHome.this, "Mật khẩu cũ không đúng", Toast.LENGTH_LONG).show();
                                     }
                                 }
                             });
@@ -687,11 +707,11 @@ public class UserHome extends AppCompatActivity
                 else
                 {
                     waitingDialog.dismiss();
-                    Toast.makeText(UserHome.this, "Passwords are not same", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UserHome.this, "2 Mật khẩu không giống nhau", Toast.LENGTH_LONG).show();
                 }
             }
         });
-        aleartDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+        aleartDialog.setNegativeButton("Thoát", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -746,16 +766,20 @@ public class UserHome extends AppCompatActivity
         LatLng latLng = new LatLng(latitude,longitude);
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(latLng)
-                .title("your position")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                .title("Vị trí hiện tại của bạn")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_action_gara));
         mMarker = mMap.addMarker(markerOptions);
         //move camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         if (mGoogleApiClient!=null)
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient,this);
     }
 
+    /**
+     *  Hàm callback được gọi ra khi bản đồ Google Map đã được vẽ xong/đã có dữ liệu đầy đủ và hiển thị lên màn hình
+     * @param googleMap   Đối tượng chứa bản đồ
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;

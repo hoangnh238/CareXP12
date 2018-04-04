@@ -7,22 +7,44 @@
         <item
             android:id="@+id/nav_info"
             android:icon="@drawable/ic_info_black_24dp"
-            android:title="CAR INFORMATION" />
+            android:title="Thông tin xe" />
         <item
+            android:id="@+id/nav_khuyenmai"
+            android:icon="@drawable/ic_adb_black_24dp"
+
+
+            android:title="Khuyến mại" />
+        <item
+            android:id="@+id/nav_binhluan"
+
+            android:icon="@drawable/ic_comment_black_24dp"
+            android:title="Bình luận" />
+        <item
+
+            android:id="@+id/nav_khoangtrang"
+
+           
+            android:title="" />
+
+
+        <item
+
             android:id="@+id/nav_help"
-            android:icon="@drawable/ic_help_black_24dp"
 
-            android:title="QUESTIONS" />
+            android:icon="@drawable/ic_help_black_24dp"
+            android:title="Gửi thắc mắc qua Email" />
+
 
         <item
+
             android:id="@+id/nav_about"
             android:icon="@drawable/ic_dehaze_black_24dp"
-            android:title="ABOUT" />
+            android:title="Thông tin ứng dụng" />
         <item
             android:id="@+id/nav_hotline"
             android:icon="@drawable/ic_call"
 
-            android:title="HOTLINE" />
+            android:title="Đường dây nóng" />
         <item
             android:id="@+id/nav_fanpage"
             android:icon="@drawable/ic_fb"
@@ -31,18 +53,18 @@
         <item
             android:id="@+id/nav_update_info"
             android:icon="@drawable/ic_update_black_24dp"
-            android:title="UPDATE INFORMATION" />
+            android:title="Cập nhật thông tin cá nhân" />
         <item
            android:id="@+id/nav_change_pwd"
           android:icon="@drawable/ic_change_history_black_24dp"
-           android:title="CHANGE PASSWORD" />
+           android:title="Thay đổi mật khẩu" />
 
 
         <item
             android:id="@+id/nav_signout"
             android:icon="@drawable/ic_power_settings_new_black_24dp"
 
-            android:title="SIGN OUT" />
+            android:title="Đăng xuất" />
 
     </group>
 

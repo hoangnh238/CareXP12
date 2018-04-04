@@ -3,23 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
     <item
-        android:id="@+id/action_market"
+        android:id="@+id/action_carwash"
         android:enabled="true"
-        android:title="Market"
-        android:icon="@drawable/ic_shopping_cart_black_24dp"
+        android:title="Trạm rửa xe"
+        android:icon="@drawable/ic_local_car_wash_black_24dp"
         app:showAsAction="ifRoom"
         />
     <item
         android:id="@+id/action_garage"
         android:enabled="true"
-        android:title="Garage"
+        android:title="Gara sửa xe"
         android:icon="@drawable/ic_directions_car_black_24dp"
         app:showAsAction="ifRoom"
         />
     <item
         android:id="@+id/action_hospital"
         android:enabled="true"
-        android:title="Hospital"
+        android:title="Bệnh viện"
         android:icon="@drawable/ic_local_hospital_black_24dp"
         app:showAsAction="ifRoom"
 
@@ -27,7 +27,7 @@
     <item
         android:id="@+id/action_gas"
         android:enabled="true"
-        android:title="Gas_Station"
+        android:title="Trạm xăng"
         android:icon="@drawable/ic_local_gas_station_black_24dp"
         app:showAsAction="ifRoom"
         />

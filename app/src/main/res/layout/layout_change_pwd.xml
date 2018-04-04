@@ -13,7 +13,7 @@
         android:layout_height="wrap_content">
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/edtPassword"
-            android:hint="Password"
+            android:hint="Mật khẩu cũ"
             android:inputType="textPassword"
             android:text=""
             android:textColor="@color/colorPrimary"
@@ -28,7 +28,7 @@
             />
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/edtNewPassword"
-            android:hint="New Password"
+            android:hint="Mật khẩu mới"
             android:inputType="textPassword"
             android:text=""
             android:textColor="@color/colorPrimary"
@@ -43,7 +43,7 @@
             />
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/edtRepeatPassword"
-            android:hint="Repeat New Password"
+            android:hint="Nhập lại mật khẩu"
             android:inputType="textPassword"
             android:text=""
             android:textColor="@color/colorPrimary"

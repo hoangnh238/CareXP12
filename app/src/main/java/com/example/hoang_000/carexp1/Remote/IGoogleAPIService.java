@@ -11,9 +11,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Url;
 
-/**
- * Created by hoang_000 on 08/03/2018.
- */
+
 
 public interface IGoogleAPIService {
     @GET

@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
             String user = Paper.book().read(user_field);
             String pwd = Paper.book().read(pwd_field);
-            if (user != null && pwd != null) {
+           if (user != null && pwd != null) {
                 if (!TextUtils.isEmpty(user) && !TextUtils.isEmpty(pwd)) {
                     autoLogin(user, pwd);
 
@@ -111,8 +111,11 @@ public class MainActivity extends AppCompatActivity {
             }
     }
 
-
-
+    /**
+     * Tu dong login moi khi phan mem duoc bat, hoac resume
+     * @param user
+     * @param pwd
+     */
     private void autoLogin(String user, String pwd) {
 
         final AlertDialog waitingDialog = new SpotsDialog(MainActivity.this);
@@ -129,13 +132,16 @@ public class MainActivity extends AppCompatActivity {
                                 .addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
-
-
+                                        //save value
 
                                         currentUser=dataSnapshot.getValue(User.class);
-                                        startActivity(new Intent(MainActivity.this, UserHome.class));
                                         waitingDialog.dismiss();
+                                        startActivity(new Intent(MainActivity.this, UserHome.class));
+
                                         finish();
+
+
+
                                     }
 
                                     @Override
@@ -143,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
 
                                     }
                                 });
-
 
                     }
 
@@ -163,8 +168,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void showDialogForgotPassword() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
-        alertDialog.setTitle("FORGOT PASSWORD");
-        alertDialog.setMessage("please enter your email adress");
+        alertDialog.setTitle("QUÊN MẬT KHẨU");
+        alertDialog.setMessage("Vui lòng nhập email của bạn để chúng tôi gửi mã xác nhận");
 
         LayoutInflater inflater=LayoutInflater.from(MainActivity.this);
         View forgot_pwd_layout= inflater.inflate(R.layout.layout_forgot_password,null);
@@ -172,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.setView(forgot_pwd_layout);
 
         //set button
-        alertDialog.setPositiveButton("RESET", new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton("Tiếp tục", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(final DialogInterface dialogInterface, int i) {
              final AlertDialog waitingDialog= new SpotsDialog(MainActivity.this);
@@ -198,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
              });
             }
         });
-        alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+        alertDialog.setNegativeButton("Thoát", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
@@ -209,8 +214,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void showLoginDialog() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("SIGN IN ");
-        dialog.setMessage("Please use email to log in");
+        dialog.setTitle("Chào mừng đến CAREXP");
+        dialog.setMessage("Vui lòng nhập đầy đủ thông tin để đăng nhập");
 
         LayoutInflater inflater = LayoutInflater.from(this);
         View login_layout = inflater.inflate(R.layout.layout_login,null);
@@ -220,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
 
         dialog.setView(login_layout);
         //set button
-        dialog.setPositiveButton("SIGN IN", new DialogInterface.OnClickListener() {
+        dialog.setPositiveButton("Đăng nhập", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -254,12 +259,10 @@ public class MainActivity extends AppCompatActivity {
                                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                                         //save value
 
-                                                           Paper.book().write(user_field,edtEmail.getText().toString());
-
-                                                           Paper.book().write(pwd_field,edtPassword.getText().toString());
-                                                          currentUser=dataSnapshot.getValue(User.class);
-                                                        startActivity(new Intent(MainActivity.this, UserHome.class));
+                                                         currentUser=dataSnapshot.getValue(User.class);
                                                         waitingDialog.dismiss();
+                                                        startActivity(new Intent(MainActivity.this, UserHome.class));
+
                                                         finish();
 
 
@@ -273,6 +276,9 @@ public class MainActivity extends AppCompatActivity {
                                                 });
 
 
+                                        Paper.book().write(user_field,edtEmail.getText().toString());
+
+                                        Paper.book().write(pwd_field,edtPassword.getText().toString());
                                     }
 
                                 }).addOnFailureListener(new OnFailureListener() {
@@ -288,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
-        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+        dialog.setNegativeButton("Thoát", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
              dialogInterface.dismiss();
@@ -301,8 +307,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void showRegisterDialog() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("REGISTER ");
-        dialog.setMessage("Please use email to register");
+        dialog.setTitle("Đăng ký tài khoản ");
+        dialog.setMessage("Vui lòng điền đầy đủ thông tin về bạn. Chỉ duy nhất các đơn vị bạn cho phép mới được nhìn thấy");
 
         LayoutInflater inflater = LayoutInflater.from(this);
         View register_layout = inflater.inflate(R.layout.layout_register,null);
@@ -313,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
 
         dialog.setView(register_layout);
         //set button
-        dialog.setPositiveButton("REGISTER", new DialogInterface.OnClickListener() {
+        dialog.setPositiveButton("Đăng ký", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -381,7 +387,7 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
-     dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+     dialog.setNegativeButton("Thoát", new DialogInterface.OnClickListener() {
          @Override
          public void onClick(DialogInterface dialogInterface, int i) {
             dialogInterface.dismiss();

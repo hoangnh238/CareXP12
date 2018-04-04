@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/back_car"
+    android:background="@drawable/carexp12345"
+
     android:id="@+id/rootLayout"
     tools:context="com.example.hoang_000.carexp1.MainActivity">
 <LinearLayout
@@ -25,12 +26,12 @@
         android:layout_height="wrap_content" />
     <TextView
         android:layout_marginTop="15dp"
-        android:text="LOOKING FOR PLACES OF REPAIRING CAR"
+        android:text="Luôn an toàn, luôn tin cậy"
         android:id="@+id/tv_name2"
         android:layout_below="@+id/tv_name1"
         android:textSize="20sp"
         android:textAlignment="center"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -43,10 +44,10 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
         android:layout_marginTop="20dp"
-        android:text="FORGOT PASSWORD ? "
+        android:text="Bạn quên mật khẩu ? "
         android:textSize="20sp"
         android:textAlignment="center"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <LinearLayout
@@ -61,16 +62,16 @@
         <Button
             android:id="@+id/btnSignIn"
             android:background="@drawable/btn_sign_in_background"
-            android:textColor="@android:color/white"
-            android:text="SIGN IN"
+            android:textColor="@android:color/black"
+            android:text="Đăng nhập"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/btnRegister"
             android:background="@drawable/btn_register_background"
-            android:textColor="@android:color/white"
-            android:text="REGISTER"
+            android:textColor="@android:color/black"
+            android:text="Đăng ký tài khoản"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content" />

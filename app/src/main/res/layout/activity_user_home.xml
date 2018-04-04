@@ -22,9 +22,9 @@
         app:headerLayout="@layout/nav_header_user_home"
         app:menu="@menu/activity_user_home_drawer"
 
-        android:background="#222231"
-        app:itemTextColor="@android:color/white"
-        app:itemIconTint="@android:color/white"
+        android:background="@android:color/white"
+        app:itemTextColor="#222231"
+        app:itemIconTint="#222231"
         />
 
 </android.support.v4.widget.DrawerLayout>

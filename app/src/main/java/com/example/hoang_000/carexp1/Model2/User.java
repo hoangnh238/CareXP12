@@ -10,7 +10,15 @@ public class User {
     public User() {
     }
 
-    public User(String email, String password, String name, String phone) {
+    /**
+     *  Ham khoi tao thong tin ve user su dung dien thoai
+     * @param email     Dia chi email. Vi du hoang@gmail.com
+     * @param password
+     * @param name
+     * @param phone
+     * @param avatarUrl
+     */
+    public User(String email, String password, String name, String phone,String avatarUrl) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -38,6 +46,7 @@ public class User {
         return name;
     }
 
+
     public void setName(String name) {
         this.name = name;
     }
@@ -49,6 +58,7 @@ public class User {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
     public String getAvatarUrl() {
         return avatarUrl;
     }
