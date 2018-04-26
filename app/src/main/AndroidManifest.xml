@@ -15,12 +15,15 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_car_64"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher_car_64_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
@@ -46,9 +49,12 @@
         <activity
             android:name=".UserHome"
             android:label="@string/title_activity_user_home"
-            android:theme="@style/AppTheme"></activity>
-        <activity android:name=".ViewPlace"></activity>
-
+            android:theme="@style/AppTheme" />
+        <activity android:name=".ViewPlace" />
+        <activity android:name=".FavoriteActivity" />
+        <activity android:name=".ShowComment" />
+        <activity android:name=".test" />
+        <activity android:name=".UserShowComment"></activity>
     </application>
 
 </manifest>

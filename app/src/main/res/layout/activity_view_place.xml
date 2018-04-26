@@ -11,16 +11,75 @@
         android:layout_centerVertical="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <ImageView
-            android:id="@+id/photo"
-            android:src="@drawable/ic_image_black_24dp"
-            android:layout_width="match_parent"
-            android:layout_height="200dp" />
+
+           
+                <ImageView
+                    android:id="@+id/photo"
+                    android:src="@drawable/ic_image_black_24dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp" />
+                
+          
+           
+
         <LinearLayout
             android:orientation="vertical"
             android:gravity="center_horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+          <LinearLayout
+              android:layout_marginLeft="30dp"
+              android:weightSum="12"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+              <android.support.design.widget.FloatingActionButton
+                  android:id="@+id/btn_rating"
+                  android:layout_weight="3"
+
+                  android:src="@drawable/ic_star_white_24dp"
+                  android:backgroundTint="@android:color/darker_gray"
+                  android:layout_width="wrap_content"
+                  android:layout_height="40dp"
+                  app:fab_elevation="6dp"
+                  app:pressedTranslationZ="6dp"
+                  app:layout_anchorGravity="bottom|right|start"
+                  app:useCompatPadding="true"
+                  />
+              <ImageView
+                  android:id="@+id/img_sms"
+                  android:layout_weight="3"
+                  android:layout_marginTop="25dp"
+                  android:src="@drawable/sms2"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content" />
+              <ImageView
+                  android:id="@+id/img_call"
+                  android:layout_weight="3"
+                  android:layout_marginTop="25dp"
+                  android:src="@drawable/telephone"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content" />
+              <ImageView
+                  android:id="@+id/img_information"
+                  android:layout_weight="3"
+                  android:layout_marginTop="25dp"
+                  android:src="@drawable/information2"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content" />
+              <ImageView
+                  android:id="@+id/img_fav"
+                  android:layout_weight="3"
+                  android:layout_marginTop="25dp"
+
+                  android:src="@drawable/heart_white"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content" />
+
+          </LinearLayout>
+
             <TextView
                 android:id="@+id/place_name"
                 android:textSize="20sp"
@@ -36,23 +95,50 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <TextView
+                android:id="@+id/place_phone"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:text="Place Phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
                 android:id="@+id/place_open_hour"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:text="Open now : "
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-            <RatingBar
-                android:id="@+id/ratingBar"
-                android:max="5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+             <RatingBar
+                 android:id="@+id/ratingBar"
+                 android:isIndicator="true"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:rating="0"
+                 android:max="5"
+                 />
             <Button
                 android:id="@+id/btn_show_map"
-                android:text="Show on Map"
-                style="@style/Widget.AppCompat.Button.Colored"
+                android:text="Hiển thị trên bản đồ"
+                android:textColor="@android:color/white"
+                 android:background="@color/btnRegister"
+
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+
+                />
+            <Button
+                android:id="@+id/btn_show_comment"
+                android:layout_marginTop="5dp"
+                android:text="Hiển thị đánh giá địa điểm"
+                android:textColor="@android:color/white"
+                android:background="@color/btnRegister"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                />
+
+
         </LinearLayout>
 
     </LinearLayout>

@@ -18,12 +18,13 @@ public class User {
      * @param phone
      * @param avatarUrl
      */
-    public User(String email, String password, String name, String phone,String avatarUrl) {
+    public User(String email, String password, String name, String phone,String avatarUrl,String rates) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.phone = phone;
         this.avatarUrl=avatarUrl;
+
     }
 
     public String getEmail() {
@@ -66,4 +67,8 @@ public class User {
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
     }
+
+
+
 }
+

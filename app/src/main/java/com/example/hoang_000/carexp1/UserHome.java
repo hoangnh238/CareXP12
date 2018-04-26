@@ -5,11 +5,14 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.media.MediaCasException;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
@@ -34,9 +37,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.hoang_000.carexp1.Model.MyPlaces;
+import com.example.hoang_000.carexp1.Model.PlaceDetail;
 import com.example.hoang_000.carexp1.Model.Results;
+import com.example.hoang_000.carexp1.Model2.Favorites;
 import com.example.hoang_000.carexp1.Model2.User;
 import com.example.hoang_000.carexp1.Remote.IGoogleAPIService;
+import com.example.hoang_000.carexp1.adapter.FavoriteViewHolder;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.ConnectionResult;
@@ -50,6 +56,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -84,39 +91,43 @@ public class UserHome extends AppCompatActivity
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        com.google.android.gms.location.LocationListener{
-
+        com.google.android.gms.location.LocationListener
+         {
+             private boolean exit = false;
     SupportMapFragment mapFragment;
     //LOCATION
     private GoogleMap mMap;
     private static final int MY_PERMISSION_REQUEST_CODE=8000;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST=300000;
-
+             PlaceDetail mPlace;
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
-    private Location mLastLocation;
+    public Location mLastLocation;
     private static int UPDATE_INERVAL = 5000;   //5S
     private static int FATEST_INERVAL = 3000;   //5S
     private static int DISPLACEMENT = 10;   //5S
     public static final int PICK_IMAGE_REQUEST=9999;
     public static User currentUser= new User();
-
+     public User user2;
     private static final int MY_PERMISSION_CODE = 1000;
 
 
-
-    private double latitude,longitude;
+             String placeAddressId="";
+             String userID_fav="";
+    public double latitude,longitude;
 
     private Marker mMarker;
 
-    IGoogleAPIService mService;
-    MyPlaces currentPlace;
 
     DatabaseReference ref;
     GeoFire geoFire;
     Marker mUserMarker;
     FirebaseStorage firebaseStorage;
     StorageReference storageReference;
+             IGoogleAPIService mService;
+             MyPlaces currentPlace;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,16 +154,16 @@ public class UserHome extends AppCompatActivity
                 switch (item.getItemId())
                 {
                     case R.id.action_garage:
-                        nearByPlace("car_repair");
+                        nearByPlace_car_repair("car_repair");
                         break;
                     case R.id.action_gas:
-                        nearByPlace("gas_station");
+                        nearByPlace_gas_station("gas_station");
                         break;
                     case R.id.action_hospital:
-                        nearByPlace("hospital");
+                        nearByPlace_hospital("hospital");
                         break;
                     case R.id.action_carwash:
-                        nearByPlace("car_wash");
+                        nearByPlace_car_wash("car_wash");
                         break;
                     default: break;
                 }
@@ -175,30 +186,116 @@ public class UserHome extends AppCompatActivity
 
         View navigationHeaderView = navigationView.getHeaderView(0);
         TextView txtname= navigationHeaderView.findViewById(R.id.txtUserName);
-       // txtname.setText(String.format("%s",currentUser.getName()));
+
         CircleImageView imgavatar=navigationHeaderView.findViewById(R.id.image_avatar);
 
+        txtname.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
 
-    //txtname.setText(currentUser.getName());
-        if(currentUser.getAvatarUrl()!=null &&!TextUtils.isEmpty(currentUser.getAvatarUrl()))
-      {
-          Picasso.with(this)
-              .load(currentUser.getAvatarUrl())
-                .into(imgavatar);}
-
+     if(Common.currentUser.getAvatarUrl()!=null&&!TextUtils.isEmpty(Common.currentUser.getAvatarUrl()))
+     {
+         Picasso.with(this)
+                 .load(Common.currentUser.getAvatarUrl())
+                 .into(imgavatar);
+     }
 
         //Geo Fire
         ref = FirebaseDatabase.getInstance().getReference("Users");
         geoFire =new GeoFire(ref);
-
+       // setUpLocation();
 
     }
 
 
-    private void nearByPlace(final String placeType) {
+    private void setUpLocation() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this,new String[]{
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION
+
+            },MY_PERMISSION_REQUEST_CODE);
+        }else{
+            if (checkPlayServices2())
+            {
+                buildGoogleApiClien();
+               createLocationRequest2();
+                disPlayLocation2();
+
+            }
+        }
+    }
+
+    private void createLocationRequest2() {
+        mLocationRequest= new LocationRequest();
+        mLocationRequest.setInterval(UPDATE_INERVAL);
+        mLocationRequest.setFastestInterval(FATEST_INERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setSmallestDisplacement(DISPLACEMENT);
+    }
+
+    private void disPlayLocation2() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
+        {
+            return;
+        }
+        mLastLocation= LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if(mLastLocation!=null)
+        {
+            final double latitude= mLastLocation.getLatitude();
+            final double longitude=mLastLocation.getLongitude();
+            // mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude),15.0f));
+            //update to firebase
+            ref.child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            ref= FirebaseDatabase.getInstance().getReference("LocationUsers");
+
+            geoFire =new GeoFire(ref);
+            geoFire.setLocation(FirebaseAuth.getInstance().getCurrentUser().getUid(), new GeoLocation(latitude, longitude), new GeoFire.CompletionListener() {
+                @Override
+                public void onComplete(String key, DatabaseError error) {
+                    //add marker
+                    if (mUserMarker!=null)
+                        mUserMarker.remove();
+                    mUserMarker= mMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(latitude,longitude))
+                            .title(String.format("You"))
+                            );
+
+                    //move camera to this option
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude),15.0f));
+                }
+            });
+            Log.d("HELLO",String.format("Your location was changed: %f/%f",latitude,longitude));
+        }
+        else
+            Log.d("HELLO","can not get your location");
+    }
+
+    private boolean checkPlayServices2() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if(resultCode!= ConnectionResult.SUCCESS){
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode))
+                GooglePlayServicesUtil.getErrorDialog(resultCode,this,PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            else{
+                Toast.makeText(this, "this device is not supported", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
+
+
+
+    private void nearByPlace_hospital(final String placeType) {
         mMap.clear();
-        String url = getUrl(latitude,longitude,placeType);
+
+
+        String url = getUrl_hospital(latitude, longitude, placeType);
+
         mService.getNearByPlaces(url)
                 .enqueue(new Callback<MyPlaces>() {
                     @Override
@@ -219,15 +316,10 @@ public class UserHome extends AppCompatActivity
                                 LatLng latLng = new LatLng(lat,lng);
                                 markerOptions.position(latLng);
                                 markerOptions.title(placeName);
-                                if (placeType.equals("car_repair"))
-                                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                                else if (placeType.equals("gas_station"))
-                                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-                                else if (placeType.equals("hospital"))
-                                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
-                                    //   Common.currentResult.getRating();
-                                else if (placeType.equals("car_wash"))
-                                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+
+                               if (placeType.equals("hospital"))
+                             //    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+                                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.emergency_ambulance));
                                 else
                                     markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 
@@ -249,14 +341,231 @@ public class UserHome extends AppCompatActivity
                 });
     }
 
-    private String getUrl(double latitude, double longitude, String placeType){
-        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/textsearch/json");
+    private void nearByPlace_car_wash(final String placeType) {
+        mMap.clear();
+
+
+        String url = getUrl_car_wash(latitude, longitude, placeType);
+
+        mService.getNearByPlaces(url)
+                .enqueue(new Callback<MyPlaces>() {
+                    @Override
+                    public void onResponse(Call<MyPlaces> call, Response<MyPlaces> response) {
+
+                        currentPlace = response.body(); //assign value  for currentPlace
+                        if (response.isSuccessful())
+                        {
+                            for (int i=0;i<response.body().getResults().length;i++)
+                            {
+                                MarkerOptions markerOptions = new MarkerOptions();
+                                Results googlePlace = response.body().getResults()[i];
+                                double lat = Double.parseDouble(googlePlace.getGeometry().getLocation1().getLat());
+
+                                double lng = Double.parseDouble(googlePlace.getGeometry().getLocation1().getLng());
+                                String placeName   = googlePlace.getName();
+                                String vicinity = googlePlace.getVicinity();
+                                LatLng latLng = new LatLng(lat,lng);
+                                markerOptions.position(latLng);
+                                markerOptions.title(placeName);
+
+                                    if (placeType.equals("car_wash"))
+                                //   markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                                       markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.car_wash));
+                                else
+                                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
+
+                                markerOptions.snippet(String.valueOf(i));//assign index for marker
+                                //add marker to map
+                                mMap.addMarker(markerOptions);
+                                //Move camera
+                                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                                mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<MyPlaces> call, Throwable t) {
+
+                    }
+                });
+    }
+
+    private void nearByPlace_gas_station(final String placeType) {
+        mMap.clear();
+
+
+        String url = getUrl_gas_station(latitude, longitude, placeType);
+
+        mService.getNearByPlaces(url)
+//        String inputlocation=mLastLocation.getLatitude()+","+mLastLocation.getLongitude();
+//         mService.getNearByPlaces(inputlocation,"5000","false",getString(R.string.google_maps_key),"gas_station")
+                .enqueue(new Callback<MyPlaces>() {
+                    @Override
+                    public void onResponse(Call<MyPlaces> call, Response<MyPlaces> response) {
+
+                        currentPlace = response.body(); //assign value  for currentPlace
+                        if (response.isSuccessful())
+                        {
+                            for (int i=0;i<response.body().getResults().length;i++)
+                            {
+                                MarkerOptions markerOptions = new MarkerOptions();
+                                Results googlePlace = response.body().getResults()[i];
+                                double lat = Double.parseDouble(googlePlace.getGeometry().getLocation1().getLat());
+
+                                double lng = Double.parseDouble(googlePlace.getGeometry().getLocation1().getLng());
+                                String placeName   = googlePlace.getName();
+                                String vicinity = googlePlace.getVicinity();
+                                LatLng latLng = new LatLng(lat,lng);
+                                markerOptions.position(latLng);
+                                markerOptions.title(placeName);
+                              //  if (placeType.equals("car_repair"))
+                                //    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                               if (placeType.equals("gas_station"))
+                                   markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.destination_marker));
+       //                            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+//                                else if (placeType.equals("hospital"))
+//                                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+//                                    //   Common.currentResult.getRating();
+//                                else if (placeType.equals("car_wash"))
+//                                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                                else
+                                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
+
+                                markerOptions.snippet(String.valueOf(i));//assign index for marker
+                                //add marker to map
+                                mMap.addMarker(markerOptions);
+                                //Move camera
+                                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                                mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<MyPlaces> call, Throwable t) {
+
+                    }
+                });
+    }
+
+    /**
+     * Lấy các thông tin của các loại địa điểm : địa điểm rửa xe,gara,bệnh viện,trạm xăng,..
+     * sau đó add marker cho các loại địa điểm
+     * @param placeType: có 4 loại địa điểm : car_wash,gara,hospial,gas_station
+     */
+    private void nearByPlace_car_repair(final String placeType) {
+        mMap.clear();
+
+
+            String url = getUrl_car_repair(latitude, longitude, placeType);
+
+        mService.getNearByPlaces(url)
+                .enqueue(new Callback<MyPlaces>() {
+                    @Override
+                    public void onResponse(Call<MyPlaces> call, Response<MyPlaces> response) {
+
+                        currentPlace = response.body(); //assign value  for currentPlace
+                        if (response.isSuccessful())
+                        {
+                            for (int i=0;i<response.body().getResults().length;i++)
+                            {
+                                MarkerOptions markerOptions = new MarkerOptions();
+                                Results googlePlace = response.body().getResults()[i];
+                                double lat = Double.parseDouble(googlePlace.getGeometry().getLocation1().getLat());
+
+                                double lng = Double.parseDouble(googlePlace.getGeometry().getLocation1().getLng());
+                                String placeName   = googlePlace.getName();
+                                String vicinity = googlePlace.getVicinity();
+                                LatLng latLng = new LatLng(lat,lng);
+                                markerOptions.position(latLng);
+                                markerOptions.title(placeName);
+                                if (placeType.equals("car_repair"))
+                                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
+  //                                  markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+//                                else if (placeType.equals("gas_station"))
+//                                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+//                                else if (placeType.equals("hospital"))
+//                                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+//                                    //   Common.currentResult.getRating();
+//                                else if (placeType.equals("car_wash"))
+//                                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                                else
+                                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
+
+                                markerOptions.snippet(String.valueOf(i));//assign index for marker
+                                //add marker to map
+                                mMap.addMarker(markerOptions);
+                                //Move camera
+                                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                                mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<MyPlaces> call, Throwable t) {
+
+                    }
+                });
+    }
+
+    /**
+     * Lấy Url dưới dạng file json với browser_key trong res/values/google_maps_api.xml
+     * thông tin của các địa điểm hiển thị dưới dạng file json
+     * @param latitude : vĩ độ
+     * @param longitude : kinh độ
+     * @param placeType : loại địa điểm
+     * @return
+     */
+    private String getUrl_car_repair(double latitude, double longitude, String placeType){
+        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json");
         googlePlacesUrl.append("?location="+latitude+","+longitude);
         googlePlacesUrl.append("&radius="+10000);
         googlePlacesUrl.append("&type="+placeType);
-        googlePlacesUrl.append("&sensor=true");
+        googlePlacesUrl.append("&sensor=false");
         googlePlacesUrl.append("&key="+getResources().getString(R.string.browser_key));
-        Log.d("getUrl",googlePlacesUrl.toString());
+        googlePlacesUrl.append("&name=garage");
+        Log.d("getUrl_car_repair",googlePlacesUrl.toString());
+        return googlePlacesUrl.toString();
+
+    }
+    private String getUrl_car_wash(double latitude, double longitude, String placeType){
+        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json");
+        googlePlacesUrl.append("?location="+latitude+","+longitude);
+        googlePlacesUrl.append("&radius="+10000);
+        googlePlacesUrl.append("&type="+placeType);
+        googlePlacesUrl.append("&sensor=false");
+        googlePlacesUrl.append("&key="+getResources().getString(R.string.browser_key));
+        //googlePlacesUrl.append("&name=car_wash");
+        Log.d("getUrl_car_wash",googlePlacesUrl.toString());
+        return googlePlacesUrl.toString();
+
+    }
+    private String getUrl_hospital(double latitude, double longitude, String placeType){
+        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json");
+        googlePlacesUrl.append("?location="+latitude+","+longitude);
+        googlePlacesUrl.append("&radius="+10000);
+        googlePlacesUrl.append("&type="+placeType);
+        googlePlacesUrl.append("&sensor=false");
+        googlePlacesUrl.append("&key="+getResources().getString(R.string.browser_key));
+        googlePlacesUrl.append("&name=hospital");
+        Log.d("getUrl_hospital",googlePlacesUrl.toString());
+        return googlePlacesUrl.toString();
+
+    }
+    private String getUrl_gas_station(double latitude, double longitude, String placeType){
+        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json");
+        googlePlacesUrl.append("?location="+latitude+","+longitude);
+        googlePlacesUrl.append("&radius="+10000);
+        googlePlacesUrl.append("&type="+placeType);
+        googlePlacesUrl.append("&sensor=false");
+        googlePlacesUrl.append("&key="+getResources().getString(R.string.browser_key));
+         googlePlacesUrl.append("&name=xăng");
+        Log.d("getUrl_gas_station",googlePlacesUrl.toString());
         return googlePlacesUrl.toString();
 
     }
@@ -306,11 +615,25 @@ public class UserHome extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+ //     DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        if (drawer.isDrawerOpen(GravityCompat.START)) {
+//            drawer.closeDrawer(GravityCompat.START);
+//        } else {
+//            super.onBackPressed();
+//        }
+        if (exit) {
+            finish(); // finish activity
         } else {
-            super.onBackPressed();
+            Toast.makeText(this, "Press Back again to Exit.",
+                    Toast.LENGTH_SHORT).show();
+            exit = true;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    exit = false;
+                }
+            }, 3000);
+
         }
     }
 
@@ -360,12 +683,20 @@ public class UserHome extends AppCompatActivity
             showhotline();
 
         }
+        else if (id == R.id.nav_favorite) {
+            Intent intent=new Intent(UserHome.this,FavoriteActivity.class);
+
+            startActivity(intent);
+
+        }
         else if (id == R.id.nav_khuyenmai) {
 
 
         }
         else if (id == R.id.nav_binhluan) {
+            Intent intent=new Intent(UserHome.this,UserShowComment.class);
 
+            startActivity(intent);
 
         }
         else if (id == R.id.nav_fanpage) {
@@ -377,6 +708,12 @@ public class UserHome extends AppCompatActivity
         return true;
     }
 
+
+
+             /**
+     * cập nhật thông tin xe cho người dùng và lưu lại rên firebase
+     * các thông tin như doi xe,phiên bản,hãng xe,ngày mua,...
+     */
     private void showCarInfo() {
         AlertDialog.Builder aleartDialog= new AlertDialog.Builder(UserHome.this);
         aleartDialog.setTitle("Thông tin xe");
@@ -462,6 +799,10 @@ public class UserHome extends AppCompatActivity
         startActivity(browserIntent);
     }
 
+
+    /**
+     * số điện thoại đường day nóng trong trường hợp khẩn cấp
+     */
     private void showhotline() {
         AlertDialog.Builder aleartDialog= new AlertDialog.Builder(UserHome.this);
         aleartDialog.setTitle("Đường dây nóng");
@@ -480,6 +821,9 @@ public class UserHome extends AppCompatActivity
         dialog.show();
     }
 
+    /**
+     * thông tin về ứng dụng
+     */
     private void showabout() {
         AlertDialog.Builder aleartDialog= new AlertDialog.Builder(UserHome.this);
         aleartDialog.setTitle("THÔNG TIN ỨNG DỤNG");
@@ -501,17 +845,25 @@ public class UserHome extends AppCompatActivity
         dialog.show();
     }
 
+    /**
+     * các thắc mắc gửi về email của quản trị viên
+     */
     private void showhelp() {
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                 "mailto","huyhoangvp96@gmail.com", null));
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Thắc mắc cần giải đáp");
         emailIntent.putExtra(Intent.EXTRA_TEXT, "Câu hỏi là : \n");
+       // emailIntent.putExtra(Intent.EXTRA_TEXT, mLastLocation.getLatitude());
         startActivity(Intent.createChooser(emailIntent, "Send email..."));
 
 
     }
 
+    /**
+     * update thông tin các nhân của người dùng: tên,số điện thoại,..
+     */
     private void showDialogUpdateInfo() {
+
         AlertDialog.Builder aleartDialog= new AlertDialog.Builder(UserHome.this);
         aleartDialog.setTitle("Cập nhật thông tin các nhân");
         aleartDialog.setMessage("Vui lòng nhập thông tin cá nhân bạn cần cập nhật");
@@ -634,6 +986,9 @@ public class UserHome extends AppCompatActivity
         }
     }
 
+    /**
+     * chức năng thay đổi mật khẩu cho người dùng
+     */
     private void showDialogChangePassWord() {
         AlertDialog.Builder aleartDialog= new AlertDialog.Builder(UserHome.this);
         aleartDialog.setTitle("Thay đổi mật khẩu");
@@ -721,6 +1076,9 @@ public class UserHome extends AppCompatActivity
         aleartDialog.show();
     }
 
+    /**
+     * chức năng đăng xuất
+     */
     private void signOut() {
         //reset remember value
         Paper.init(this);
@@ -738,10 +1096,12 @@ public class UserHome extends AppCompatActivity
         mLocationRequest.setInterval(1000);
         mLocationRequest.setFastestInterval(1000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-        {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,mLocationRequest,this);
-        }
+      if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+      {
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,mLocationRequest,this);
+     }
+
+
     }
 
 
@@ -758,23 +1118,63 @@ public class UserHome extends AppCompatActivity
 
     @Override
     public void onLocationChanged(Location location) {
-        mLastLocation= location;
+      /* mLastLocation= location;
+
+
         if (mMarker!=null)
             mMarker.remove();
         latitude=location.getLatitude();
         longitude=location.getLongitude();
         LatLng latLng = new LatLng(latitude,longitude);
+
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(latLng)
                 .title("Vị trí hiện tại của bạn")
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_action_gara));
         mMarker = mMap.addMarker(markerOptions);
-        //move camera
+       // move camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         if (mGoogleApiClient!=null)
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient,this);*/
+
+        mLastLocation= location;
+
+
+        if (mMarker!=null)
+            mMarker.remove();
+        latitude=location.getLatitude();
+        longitude=location.getLongitude();
+        LatLng latLng = new LatLng(latitude,longitude);
+        ref.child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        ref= FirebaseDatabase.getInstance().getReference("LocationUsers");
+
+        geoFire =new GeoFire(ref);
+        geoFire.setLocation(FirebaseAuth.getInstance().getCurrentUser().getUid(), new GeoLocation(latitude, longitude), new GeoFire.CompletionListener() {
+            @Override
+            public void onComplete(String key, DatabaseError error) {
+                //add marker
+
+                mUserMarker= mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(latitude,longitude))
+                        .title(String.format("You"))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_action_gara))
+                );
+
+                //move camera to this option
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude),15.0f));
+            }
+        });
+
+
+        if (mGoogleApiClient!=null)
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient,this);
+
+
+
     }
+
+
 
     /**
      *  Hàm callback được gọi ra khi bản đồ Google Map đã được vẽ xong/đã có dữ liệu đầy đủ và hiển thị lên màn hình
@@ -782,6 +1182,19 @@ public class UserHome extends AppCompatActivity
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+        try{
+            boolean isSuccess = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(this,R.raw.my_style_map)
+            );
+          if(!isSuccess)
+              Log.e("ERROR","Maps styles load failed");
+
+        }
+        catch (Resources.NotFoundException ex){
+            ex.printStackTrace();
+        }
+
         mMap = googleMap;
         if (Build.VERSION.SDK_INT >=Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -800,13 +1213,21 @@ public class UserHome extends AppCompatActivity
             @Override
             public boolean onMarkerClick(Marker marker) {
                 //when user select marker ,just get result of place and assign  to static variable
+                 if(marker.getSnippet()!=null) {
+                     Common.currentResult = currentPlace.getResults()[Integer.parseInt(marker.getSnippet())];
+                     //start new activity
+                     Intent intent = new Intent(UserHome.this, ViewPlace.class);
+                     Bundle bundle = new Bundle();
+                     bundle.putString("placeid", marker.getId());
+                     intent.putExtra("package", bundle);
+                     startActivity(intent);
+                 }
 
-                Common.currentResult = currentPlace.getResults()[Integer.parseInt(marker.getSnippet())];
-                //start new activity
-                startActivity(new Intent(UserHome.this,ViewPlace.class));
                 return true;
             }
         });
+
+
     }
 
     private synchronized void buildGoogleApiClien() {
@@ -817,4 +1238,6 @@ public class UserHome extends AppCompatActivity
                 .build();
         mGoogleApiClient.connect();
     }
+
+
 }

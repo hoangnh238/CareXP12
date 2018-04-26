@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.example.hoang_000.carexp1.Model.MyPlaces;
 import com.example.hoang_000.carexp1.Model.PlaceDetail;
 import com.example.hoang_000.carexp1.Model2.Favorites;
 import com.example.hoang_000.carexp1.Model2.Rating;
@@ -50,9 +51,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * hiển thị list các địa điểm là người dùng yêu thích tại menu(địa điểm yêu thích) và chỉ đường đến địa điểm đó
+ * ví dụ: tên địa điểm A
+ *        Địa chỉ của A
+ *        button:direction
+ */
 public class FavoriteActivity extends AppCompatActivity {
 
-    // String placeAddressId="";
+    MyPlaces currentPlace;
     SupportMapFragment mapFragment;
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
@@ -85,10 +92,7 @@ public class FavoriteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-//                .setDefaultFontPath("fonts/Arkhip_font.ttf")
-//                .setFontAttrId(R.attr.fontPath)
-//                .build());
+
         setContentView(R.layout.activity_favorite);
 
 
@@ -127,7 +131,8 @@ public class FavoriteActivity extends AppCompatActivity {
                             holder.btnDirection.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-
+//                                    Common.currentResult = currentPlace.getResults()[Integer.parseInt(v.toString())];
+//                                      Intent intent = new Intent(FavoriteActivity.this,ViewPlace.class);
                                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(holder.url));
                                     startActivity(intent);
                                 }
@@ -175,7 +180,10 @@ public class FavoriteActivity extends AppCompatActivity {
                                 public void onClick(View v) {
                                     //  String place = model.getPlaceIDfav();
                                     //  String placeDetailUrl = getPlaceDetailUrl(place);
+
                                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+//                                    Common.currentResult = currentPlace.getResults()[Integer.parseInt(v.toString())];
+//                                    Intent intent = new Intent(FavoriteActivity.this,ViewPlace.class);
                                     startActivity(intent);
                                 }
                             });
@@ -200,24 +208,13 @@ public class FavoriteActivity extends AppCompatActivity {
     }
 
 
-   /* private String getPlaceDetailUrl(String place_id) {
-        url = "";
 
-        mService.getDetailPlaces(getPlaceDetailUrl(place_id))
-                .enqueue(new Callback<PlaceDetail>() {
-                    @Override
-                    public void onResponse(Call<PlaceDetail> call, Response<PlaceDetail> response) {
-                        PlaceDetail mPlace = response.body();
-                        url = mPlace.getResult().getUrl();
-                    }
 
-                    @Override
-                    public void onFailure(Call<PlaceDetail> call, Throwable t) {
-
-                    }
-                });
-        return url;
-    }*/
+    /**
+     * lấy url của địa điểm đó trên google map ví dụ : https://www.google.com/maps?cid=4056373543307805169
+     * @param place_id là id của địa điểm đó ví dụ: ChIJ-8yIF1SrNTER8FAE1f87tk0
+     * @return
+     */
   private String getPlaceDetailUrl(String place_id) {
        //url = "";
 
@@ -237,9 +234,14 @@ public class FavoriteActivity extends AppCompatActivity {
        return url;
    }
 
+    /**
+     * lấy url là là file json của địa điểm có id là place_id
+     * @param place_id là id của địa điểm đó
+     * @return
+     */
     private String getPlaceUrl(String place_id) {
        StringBuilder url = new StringBuilder("https://maps.googleapis.com/maps/api/place/details/json");
-     
+
         url.append("?placeid="+place_id);
        url.append("&key="+getResources().getString(R.string.browser_key));
         return url.toString();

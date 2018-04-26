@@ -20,6 +20,11 @@
             android:icon="@drawable/ic_comment_black_24dp"
             android:title="Bình luận" />
         <item
+            android:id="@+id/nav_favorite"
+
+            android:icon="@drawable/ic_favorite_black_24dp"
+            android:title="Địa điểm yêu thích" />
+        <item
 
             android:id="@+id/nav_khoangtrang"
 

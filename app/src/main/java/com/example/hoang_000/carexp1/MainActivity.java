@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
 import android.renderscript.Script;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -18,6 +19,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.hoang_000.carexp1.Model2.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -50,10 +52,11 @@ public class MainActivity extends AppCompatActivity {
     private final static int PEMISSION=1000;
     public static final String user_field="usr";
     public static final String pwd_field="pwd";
+    private boolean exit = false;
 
 
     TextView txtForgotPassword;
-    public static User currentUser;
+  //  public static User currentUser;
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
@@ -134,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         //save value
 
-                                        currentUser=dataSnapshot.getValue(User.class);
+                                        Common.currentUser=dataSnapshot.getValue(User.class);
                                         waitingDialog.dismiss();
                                         startActivity(new Intent(MainActivity.this, UserHome.class));
 
@@ -166,6 +169,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * chức năng reset lại mật khẩu khi người dùng quên mật khẩu
+     * người dùng sẽ nhập email của mình rồi hệ thống sẽ gửi mã xác nhận
+     */
     private void showDialogForgotPassword() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
         alertDialog.setTitle("QUÊN MẬT KHẨU");
@@ -212,6 +219,10 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
+    /**
+     * chức năng đăng nhập vào ứng dụng
+     * lưu ý mật khẩu không nhỏ hơn 6 ký tự
+     */
     private void showLoginDialog() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("Chào mừng đến CAREXP");
@@ -259,10 +270,11 @@ public class MainActivity extends AppCompatActivity {
                                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                                         //save value
 
-                                                         currentUser=dataSnapshot.getValue(User.class);
+                                                         Common.currentUser=dataSnapshot.getValue(User.class);
                                                         waitingDialog.dismiss();
-                                                        startActivity(new Intent(MainActivity.this, UserHome.class));
-
+                                                       // startActivity(new Intent(MainActivity.this, UserHome.class));
+                                                        Intent intent = new Intent(MainActivity.this, UserHome.class);
+                                                        startActivity(intent);
                                                         finish();
 
 
@@ -305,6 +317,11 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    /**
+     * chức năng đăng ký tài khoản
+     * người dùng nhập đầy đủ các thông tin cá nhân
+     * lưu lại dữ liệu trên firebase
+     */
     private void showRegisterDialog() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("Đăng ký tài khoản ");
@@ -394,5 +411,23 @@ public class MainActivity extends AppCompatActivity {
          }
      });
    dialog.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (exit) {
+            finish(); // finish activity
+        } else {
+            Toast.makeText(this, "Press Back again to Exit.",
+                    Toast.LENGTH_SHORT).show();
+            exit = true;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    exit = false;
+                }
+            }, 3000);
+
+        }
     }
 }
