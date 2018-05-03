@@ -6,6 +6,7 @@ package com.example.hoang_000.carexp1.Model2;
 
 public class Rating {
 
+
     private String emailUser;
     private String placenameRate;
     private String userID;

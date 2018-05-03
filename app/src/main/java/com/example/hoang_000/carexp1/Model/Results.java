@@ -1,10 +1,14 @@
 package com.example.hoang_000.carexp1.Model;
 
+import com.example.hoang_000.carexp1.Model2.Rating;
+
 /**
  * Created by hoang_000 on 08/03/2018.
  */
 
 public class Results {
+    private Rating rating2;
+
     private Photos[] photos;
 
     private String id;
@@ -28,7 +32,14 @@ public class Results {
     private Geometry geometry;
 
     private Opening_hours opening_hours;
-
+    public Rating getRating2()
+    {
+        return rating2;
+    }
+    public void setRating2(Rating rating2)
+    {
+        this.rating2=rating2;
+    }
     public Photos[] getPhotos ()
     {
         return photos;

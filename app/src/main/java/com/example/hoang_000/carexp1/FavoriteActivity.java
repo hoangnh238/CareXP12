@@ -54,8 +54,8 @@ import retrofit2.Response;
 /**
  * hiển thị list các địa điểm là người dùng yêu thích tại menu(địa điểm yêu thích) và chỉ đường đến địa điểm đó
  * ví dụ: tên địa điểm A
- *        Địa chỉ của A
- *        button:direction
+ * Địa chỉ của A
+ * button:direction
  */
 public class FavoriteActivity extends AppCompatActivity {
 
@@ -105,8 +105,6 @@ public class FavoriteActivity extends AppCompatActivity {
         recyclerViewfav.setLayoutManager(layoutManagerFav);
 
 
-
-
         //swipe layout
         mSwipeRefreshLayoutfav = (SwipeRefreshLayout) findViewById(R.id.swipe_layout_fav);
         mSwipeRefreshLayoutfav.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -121,19 +119,22 @@ public class FavoriteActivity extends AppCompatActivity {
                     adapterfav = new FirebaseRecyclerAdapter<Favorites, FavoriteViewHolder>(options) {
 
                         @Override
-                        protected void onBindViewHolder(@NonNull final FavoriteViewHolder holder, int position, @NonNull Favorites model) {
+                        protected void onBindViewHolder(@NonNull final FavoriteViewHolder holder, final int position, @NonNull Favorites model) {
 
                             holder.txtNameAddrFav.setText(model.getNameofplacefav());
                             holder.txtAddrFav.setText(model.getAddressFav());
 
-                            String place = model.getPlaceIDfav();
+                            final String place = model.getPlaceIDfav();
                             holder.url = getPlaceDetailUrl(place);
                             holder.btnDirection.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-//                                    Common.currentResult = currentPlace.getResults()[Integer.parseInt(v.toString())];
-//                                      Intent intent = new Intent(FavoriteActivity.this,ViewPlace.class);
                                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(holder.url));
+                                 /*  Common.currentResult = currentPlace.getResults()[position];
+                                    Intent intent = new Intent(FavoriteActivity.this, ViewPlace.class);
+                                    intent.putExtra("placeid", place);
+*/
+
                                     startActivity(intent);
                                 }
                             });
@@ -169,21 +170,24 @@ public class FavoriteActivity extends AppCompatActivity {
                             .build();
                     adapterfav = new FirebaseRecyclerAdapter<Favorites, FavoriteViewHolder>(options) {
                         @Override
-                        protected void onBindViewHolder(@NonNull final FavoriteViewHolder holder, int position, @NonNull final Favorites model) {
+                        protected void onBindViewHolder(@NonNull final FavoriteViewHolder holder, final int position, @NonNull final Favorites model) {
                             holder.txtNameAddrFav.setText(model.getNameofplacefav());
 
                             holder.txtAddrFav.setText(model.getAddressFav());
 
                             holder.url = getPlaceDetailUrl(model.getPlaceIDfav());
+
+
                             holder.btnDirection.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    //  String place = model.getPlaceIDfav();
-                                    //  String placeDetailUrl = getPlaceDetailUrl(place);
 
-                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-//                                    Common.currentResult = currentPlace.getResults()[Integer.parseInt(v.toString())];
-//                                    Intent intent = new Intent(FavoriteActivity.this,ViewPlace.class);
+
+                                   Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                                    /*Common.currentResult = currentPlace.getResults()[position];
+                                    Intent intent = new Intent(FavoriteActivity.this, ViewPlace.class);
+                                    intent.putExtra("placeid", model.getPlaceIDfav());*/
+
                                     startActivity(intent);
                                 }
                             });
@@ -208,47 +212,44 @@ public class FavoriteActivity extends AppCompatActivity {
     }
 
 
-
-
     /**
      * lấy url của địa điểm đó trên google map ví dụ : https://www.google.com/maps?cid=4056373543307805169
+     *
      * @param place_id là id của địa điểm đó ví dụ: ChIJ-8yIF1SrNTER8FAE1f87tk0
      * @return
      */
-  private String getPlaceDetailUrl(String place_id) {
-       //url = "";
+    private String getPlaceDetailUrl(String place_id) {
+        //url = "";
 
-       mService.getDetailPlaces(getPlaceUrl(place_id))
-               .enqueue(new Callback<PlaceDetail>() {
-                   @Override
-                   public void onResponse(Call<PlaceDetail> call, Response<PlaceDetail> response) {
-                       PlaceDetail mPlace = response.body();
-                       url = mPlace.getResult().getUrl();
-                   }
+        mService.getDetailPlaces(getPlaceUrl(place_id))
+                .enqueue(new Callback<PlaceDetail>() {
+                    @Override
+                    public void onResponse(Call<PlaceDetail> call, Response<PlaceDetail> response) {
+                        PlaceDetail mPlace = response.body();
+                        url = mPlace.getResult().getUrl();
+                    }
 
-                   @Override
-                   public void onFailure(Call<PlaceDetail> call, Throwable t) {
+                    @Override
+                    public void onFailure(Call<PlaceDetail> call, Throwable t) {
 
-                   }
-               });
-       return url;
-   }
+                    }
+                });
+        return url;
+    }
 
     /**
      * lấy url là là file json của địa điểm có id là place_id
+     *
      * @param place_id là id của địa điểm đó
      * @return
      */
     private String getPlaceUrl(String place_id) {
-       StringBuilder url = new StringBuilder("https://maps.googleapis.com/maps/api/place/details/json");
+        StringBuilder url = new StringBuilder("https://maps.googleapis.com/maps/api/place/details/json");
 
-        url.append("?placeid="+place_id);
-       url.append("&key="+getResources().getString(R.string.browser_key));
+        url.append("?placeid=" + place_id);
+        url.append("&key=" + getResources().getString(R.string.browser_key));
         return url.toString();
     }
-
-
-
 
 
     private void loadFavoriteList() {

@@ -413,12 +413,16 @@ public class MainActivity extends AppCompatActivity {
    dialog.show();
     }
 
+
+    /**
+     * chức năng nhấn nút back 2 lần để thoát ứng dụng
+     */
     @Override
     public void onBackPressed() {
         if (exit) {
             finish(); // finish activity
         } else {
-            Toast.makeText(this, "Press Back again to Exit.",
+            Toast.makeText(this, "Nhấn nút trở về một lấn nữa để thoát.",
                     Toast.LENGTH_SHORT).show();
             exit = true;
             new Handler().postDelayed(new Runnable() {
