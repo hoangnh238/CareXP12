@@ -15,17 +15,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Email"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textColor="@color/colorPrimaryDark"
             />
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/edtEmail"
-            android:hint="Email của bạn"
+
             android:inputType="textEmailAddress"
             android:text=""
             android:textColor="@color/colorPrimary"
             android:textColorHint="@color/colorPrimary"
-            android:textSize="10sp"
+            android:textSize="14sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:met_singleLineEllipsis="true"
@@ -37,17 +37,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Mật khẩu"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textColor="@color/colorPrimaryDark"
             />
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/edtPassword"
-            android:hint="Mật khẩu của bạn "
+
             android:inputType="textPassword"
             android:text=""
             android:textColor="@color/colorPrimary"
             android:textColorHint="@color/colorPrimary"
-            android:textSize="10sp"
+            android:textSize="14sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:met_singleLineEllipsis="true"
@@ -59,17 +59,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Tên"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textColor="@color/colorPrimaryDark"
             />
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/edtName"
-            android:hint="Tên của bạn "
+
             android:inputType="text"
             android:text=""
             android:textColor="@color/colorPrimary"
             android:textColorHint="@color/colorPrimary"
-            android:textSize="10sp"
+            android:textSize="14sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:met_singleLineEllipsis="true"
@@ -86,12 +86,12 @@
             />
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/edtPhone"
-            android:hint="Số điện thoại của bạn"
+
             android:inputType="phone"
             android:text=""
             android:textColor="@color/colorPrimary"
             android:textColorHint="@color/colorPrimary"
-            android:textSize="10sp"
+            android:textSize="14sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:met_singleLineEllipsis="true"

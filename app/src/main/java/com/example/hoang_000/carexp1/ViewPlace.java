@@ -310,7 +310,7 @@ public class ViewPlace extends AppCompatActivity implements RatingDialogListener
         startActivity(smsIntent);
     }
 
-    // đây là đoạn get mà đoạn set cơ
+
     private void getRatingPlace(String placeAddressId2) {
 
         Query placeRating = placeDetailRef.orderByChild("placeRatingID").equalTo(placeAddressId2);

@@ -28,6 +28,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -243,15 +244,15 @@ public class MainActivity extends AppCompatActivity {
                         dialogInterface.dismiss();
                         //check validation
                         if (TextUtils.isEmpty(edtEmail.getText().toString())) {
-                            Snackbar.make(rootLayout, "Please enter email address", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(rootLayout, "Vui lòng nhập email", Snackbar.LENGTH_LONG).show();
                             return;
                         }
                         if (TextUtils.isEmpty(edtPassword.getText().toString())) {
-                            Snackbar.make(rootLayout, "Please enter password", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(rootLayout, "Vui lòng nhập mật khẩu", Snackbar.LENGTH_LONG).show();
                             return;
                         }
                         if (edtPassword.getText().toString().length() < 6) {
-                            Snackbar.make(rootLayout, "Password too short ", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(rootLayout, "Mật khẩu quá ngắn", Snackbar.LENGTH_LONG).show();
                             return;
                         }
                         final AlertDialog waitingDialog = new SpotsDialog(MainActivity.this);
@@ -269,6 +270,9 @@ public class MainActivity extends AppCompatActivity {
                                                     @Override
                                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                                         //save value
+
+                                                            Paper.book().write(user_field, edtEmail.getText().toString());
+                                                            Paper.book().write(pwd_field, edtPassword.getText().toString());
 
                                                          Common.currentUser=dataSnapshot.getValue(User.class);
                                                         waitingDialog.dismiss();
@@ -288,16 +292,14 @@ public class MainActivity extends AppCompatActivity {
                                                 });
 
 
-                                        Paper.book().write(user_field,edtEmail.getText().toString());
 
-                                        Paper.book().write(pwd_field,edtPassword.getText().toString());
                                     }
 
                                 }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 waitingDialog.dismiss();
-                                Snackbar.make(rootLayout, "Failed" + e.getMessage(), Snackbar.LENGTH_SHORT)
+                                Snackbar.make(rootLayout, "Lỗi " + e.getMessage(), Snackbar.LENGTH_SHORT)
                                         .show();
                                 btnSignIn.setEnabled(true);
                             }
@@ -325,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
     private void showRegisterDialog() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("Đăng ký tài khoản ");
-        dialog.setMessage("Vui lòng điền đầy đủ thông tin về bạn. Chỉ duy nhất các đơn vị bạn cho phép mới được nhìn thấy");
+        dialog.setMessage("Vui lòng điền đầy đủ thông tin về bạn, các đơn vị bạn cho phép mới được nhìn thấy");
 
         LayoutInflater inflater = LayoutInflater.from(this);
         View register_layout = inflater.inflate(R.layout.layout_register,null);
@@ -341,6 +343,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
 
                 dialogInterface.dismiss();
+
+
                 //check validation
                 if(TextUtils.isEmpty(edtEmail.getText().toString()))
                 {
@@ -369,6 +373,8 @@ public class MainActivity extends AppCompatActivity {
                         .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                             @Override
                             public void onSuccess(AuthResult authResult) {
+
+                                sendEmailVerification();
                               //Save to db
                                 User user = new User();
                                 user.setEmail(edtEmail.getText().toString());
@@ -382,7 +388,7 @@ public class MainActivity extends AppCompatActivity {
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
-                                                Snackbar.make(rootLayout,"Register success ",Snackbar.LENGTH_SHORT).show();
+                                               // Snackbar.make(rootLayout,"Register success ",Snackbar.LENGTH_SHORT).show();
                                                 return;
                                             }
                                         })
@@ -411,6 +417,22 @@ public class MainActivity extends AppCompatActivity {
          }
      });
    dialog.show();
+    }
+
+    private void sendEmailVerification() {
+        FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
+        if(user!=null)
+        {
+            user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()){
+                        Toast.makeText(MainActivity.this, "Vui lòng xác nhận đường link ở Email của bạn", Toast.LENGTH_LONG).show();
+                       // FirebaseAuth.getInstance().signOut();
+                    }
+                }
+            });
+        }
     }
 
 

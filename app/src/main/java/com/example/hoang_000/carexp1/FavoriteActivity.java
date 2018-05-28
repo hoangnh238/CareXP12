@@ -59,7 +59,7 @@ import retrofit2.Response;
  */
 public class FavoriteActivity extends AppCompatActivity {
 
-    MyPlaces currentPlace;
+    Response<PlaceDetail> currentPlace;
     SupportMapFragment mapFragment;
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
@@ -73,6 +73,7 @@ public class FavoriteActivity extends AppCompatActivity {
     IGoogleAPIService mService = Common.getGoogleAPIService();
     FirebaseRecyclerAdapter<Favorites, FavoriteViewHolder> adapterfav;
     public String url = "";
+    IGoogleAPIService mService2;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -130,6 +131,7 @@ public class FavoriteActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(View v) {
                                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(holder.url));
+
                                  /*  Common.currentResult = currentPlace.getResults()[position];
                                     Intent intent = new Intent(FavoriteActivity.this, ViewPlace.class);
                                     intent.putExtra("placeid", place);
@@ -184,6 +186,7 @@ public class FavoriteActivity extends AppCompatActivity {
 
 
                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+
                                     /*Common.currentResult = currentPlace.getResults()[position];
                                     Intent intent = new Intent(FavoriteActivity.this, ViewPlace.class);
                                     intent.putExtra("placeid", model.getPlaceIDfav());*/
@@ -210,6 +213,7 @@ public class FavoriteActivity extends AppCompatActivity {
         });
 
     }
+
 
 
     /**

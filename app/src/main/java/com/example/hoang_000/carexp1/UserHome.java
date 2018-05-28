@@ -141,7 +141,7 @@ public class UserHome extends AppCompatActivity
 
         //init service
         mService = Common.getGoogleAPIService();
-        //request runtime
+        //Yêu cầu truy cập với phiên bản Android từ 6.0 trở lên
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
         }
@@ -774,7 +774,9 @@ public class UserHome extends AppCompatActivity
         aleartDialog.setPositiveButton("GỌI", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
+                //String phone = "01655907238";
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", "+841655907238", null));
+                startActivity(intent);
             }
         });
         AlertDialog dialog = aleartDialog.create();
