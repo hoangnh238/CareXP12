@@ -9,18 +9,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 /**
- * Phụ trách lấy thông tin các đối tượng như xưởng, trạm xăng.. từ Google
+ * Phụ trách lấy dữ liệu các đối tượng như xưởng, trạm xăng.. từ Google
  */
 public class RetrofitClient {
-    /**
-     * Cấu trúc chứa thong tin ve 1 xưởng, trạm xăng...
-     */
+
     private static Retrofit retrofit=null;
 
     /**
-     * lấy thông tin các đối tượng như xưởng, trạm xăng.. từ Google
-     * @param baseUrl   URL của đối tượng cần lấy. Ví dụ   https://goo.gl/maps/qq7hAQCAAxP2
-     * @return     Cấu trúc chứa thong tin ve 1 xưởng, trạm xăng...
+     * lấy dữ liệu các đối tượng như xưởng, trạm xăng.. từ Google
+     * @param baseUrl   URL chính  https://goo.gl/maps/
+     * @return     Cấu trúc chứa thông tin ve 1 xưởng, trạm xăng...
      */
     public static  Retrofit getClient(String baseUrl){
         if (retrofit==null)

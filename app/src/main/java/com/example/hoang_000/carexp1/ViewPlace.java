@@ -77,6 +77,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * hiển thị thông tin của một địa điểm và các chức năng có liên quan đến địa điểm
+ * bao gồm: đánh giá địa điểm,gọi điện, gửi sms,xem trang web, thêm vào địa điểm yêu thích
+ */
 public class ViewPlace extends AppCompatActivity implements RatingDialogListener {
     // public double latitude,longitude;
     ImageView photo;
@@ -84,7 +88,7 @@ public class ViewPlace extends AppCompatActivity implements RatingDialogListener
 
     TextView txtStars;
     TextView opening_hours, place_address, place_name, place_phone;
-    Button btnViewOnMap, btnShowCmt;
+    Button btnViewOnMap, btnShowCmt,btnViewDirection;
     IGoogleAPIService mService;
     PlaceDetail mPlace;
     MyPlaces myPlaces;
@@ -155,8 +159,8 @@ public class ViewPlace extends AppCompatActivity implements RatingDialogListener
         place_name = (TextView) findViewById(R.id.place_name);
         place_phone = (TextView) findViewById(R.id.place_phone);
         opening_hours = (TextView) findViewById(R.id.place_open_hour);
-        btnViewOnMap = (Button) findViewById(R.id.btn_show_map);
-
+       // btnViewOnMap = (Button) findViewById(R.id.btn_show_map);
+        btnViewDirection = (Button) findViewById(R.id.btn_view_direction);
         btnRating = (FloatingActionButton) findViewById(R.id.btn_rating);
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         //empty all view
@@ -209,16 +213,24 @@ public class ViewPlace extends AppCompatActivity implements RatingDialogListener
                 CallGara();
             }
         });
-        btnViewOnMap.setOnClickListener(new View.OnClickListener() {
+
+        //hiển thị vị trí của địa điểm đó trên bản đồ
+       /* btnViewOnMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mPlace.getResult().getUrl()));
                 startActivity(mapIntent);
             }
-        });
+        });*/
 
-
-        //photo
+         btnViewDirection.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 Intent mapIntent = new Intent(ViewPlace.this,ViewDirection.class);
+                 startActivity(mapIntent);
+             }
+         });
+        //photo: hiển thị ảnh của địa điểm
         if (Common.currentResult.getPhotos() != null && Common.currentResult.getPhotos().length > 0) {
             Picasso.with(this)
                     .load(getPhotoOfPlace(Common.currentResult.getPhotos()[0].getPhoto_reference(), 1000))
@@ -238,7 +250,7 @@ public class ViewPlace extends AppCompatActivity implements RatingDialogListener
         }*/
 
 
-        //opening hours
+        //opening hours: kiểm tra xem hiện tại cửa hàng có mở cửa hay không
 
         if (Common.currentResult.getOpening_hours() != null) {
             opening_hours.setText("Hiện tại đang mở cửa : " + Common.currentResult.getOpening_hours().getOpen_now());
@@ -310,7 +322,10 @@ public class ViewPlace extends AppCompatActivity implements RatingDialogListener
         startActivity(smsIntent);
     }
 
-
+    /**
+     * tính giá trị trung bình sao của một địa điểm
+     * @param placeAddressId2 là id của địa điểm được đánh giá
+     */
     private void getRatingPlace(String placeAddressId2) {
 
         Query placeRating = placeDetailRef.orderByChild("placeRatingID").equalTo(placeAddressId2);
@@ -339,6 +354,9 @@ public class ViewPlace extends AppCompatActivity implements RatingDialogListener
 
     }
 
+    /**
+     * giao diện đánh giá
+     */
     private void showRatingDialog() {
 
         new AppRatingDialog.Builder()
@@ -377,6 +395,12 @@ public class ViewPlace extends AppCompatActivity implements RatingDialogListener
         return url.toString();
     }
 
+
+    /**
+     * lưu đánh giá của người dùng về một địa điểm vào cơ sở dữ liệu(firebase)
+     * @param value : số sao người dùng đánh giá về địa điểm đó
+     * @param comments : bình luận của người dùng về địa điểm đó.
+     */
     @Override
     public void onPositiveButtonClicked(int value, final String comments) {
         //get rating and upload to firebase

@@ -16,7 +16,7 @@ import com.example.hoang_000.carexp1.Model2.Rating;
 import com.example.hoang_000.carexp1.Model2.User;
 import com.example.hoang_000.carexp1.Remote.IGoogleAPIService;
 import com.example.hoang_000.carexp1.Remote.RetrofitClient;
-
+import com.example.hoang_000.carexp1.Remote.RetrofitScalarClient;
 
 
 public class Common {
@@ -36,6 +36,9 @@ public class Common {
         return RetrofitClient.getClient(GOOGLE_MAPS_URL).create(IGoogleAPIService.class);
     }
 
+    public static IGoogleAPIService getGoogleAPIServiceScalar() {
+        return RetrofitScalarClient.getScalarClient(GOOGLE_MAPS_URL).create(IGoogleAPIService.class);
+    }
     public static boolean isConnectedToInternet(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager != null) {

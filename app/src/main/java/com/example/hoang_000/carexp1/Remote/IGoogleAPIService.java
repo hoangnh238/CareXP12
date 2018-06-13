@@ -24,6 +24,7 @@ import retrofit2.http.Url;
  * getDetailPlaces url  : https://maps.googleapis.com/maps/api/place/details/json?placeid= &key=
  * placeid là id của địa điểm trên googlemap
  * key là browserkey of google map api
+ * lấy danh sách tất cả các địa điểm
  */
 public interface IGoogleAPIService {
     @GET
@@ -38,4 +39,6 @@ public interface IGoogleAPIService {
  // );
     @GET
     Call<PlaceDetail> getDetailPlaces(@Url String url);
+    @GET("maps/api/directions/json")
+    Call<String> getDirections(@Query("origin") String origin,@Query("destination") String destination);
 }

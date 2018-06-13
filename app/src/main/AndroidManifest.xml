@@ -54,7 +54,10 @@
         <activity android:name=".FavoriteActivity" />
         <activity android:name=".ShowComment" />
         <activity android:name=".test" />
-        <activity android:name=".UserShowComment"></activity>
+        <activity android:name=".UserShowComment" />
+        <activity
+            android:name=".ViewDirection"
+            android:label="@string/title_activity_view_direction"></activity>
     </application>
 
 </manifest>

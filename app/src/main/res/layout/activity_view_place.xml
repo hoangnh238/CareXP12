@@ -116,7 +116,7 @@
                  android:rating="0"
                  android:max="5"
                  />
-            <Button
+           <!-- <Button
                 android:id="@+id/btn_show_map"
                 android:text="Hiển thị trên bản đồ"
                 android:textColor="@android:color/white"
@@ -125,7 +125,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                />
+                />-->
             <Button
                 android:id="@+id/btn_show_comment"
                 android:layout_marginTop="5dp"
@@ -137,7 +137,17 @@
                 android:layout_height="wrap_content"
 
                 />
+            <Button
+                android:id="@+id/btn_view_direction"
+                android:layout_marginTop="5dp"
+                android:text="Hiển thị chỉ đường"
+                android:textColor="@android:color/white"
+                android:background="@color/btnRegister"
 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                />
 
         </LinearLayout>
 

@@ -103,8 +103,8 @@ public class UserHome extends AppCompatActivity
     private GoogleApiClient mGoogleApiClient;
     public Location mLastLocation;
     private static int UPDATE_INERVAL = 5000;   //5S
-    private static int FATEST_INERVAL = 3000;   //5S
-    private static int DISPLACEMENT = 10;   //5S
+    private static int FATEST_INERVAL = 3000;
+    private static int DISPLACEMENT = 10;
     public static final int PICK_IMAGE_REQUEST = 9999;
     public static User currentUser = new User();
     public User user2;
@@ -304,8 +304,8 @@ public class UserHome extends AppCompatActivity
                                 markerOptions.title(googlePlace.getPlace_id());
 
                                 if (placeType.equals("hospital"))
-
-                                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.emergency_ambulance));
+                                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+                                  //  markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.emergency_ambulance));
                                 else
                                     markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 
@@ -353,8 +353,8 @@ public class UserHome extends AppCompatActivity
                                 markerOptions.title(googlePlace.getPlace_id());
 
                                 if (placeType.equals("car_wash"))
-                                    //   markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-                                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.car_wash));
+                                       markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+                                  //  markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.car_wash));
                                 else
                                     markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 
@@ -658,10 +658,7 @@ public class UserHome extends AppCompatActivity
 
             startActivity(intent);
 
-        } else if (id == R.id.nav_khuyenmai) {
-
-
-        } else if (id == R.id.nav_binhluan) {
+        }  else if (id == R.id.nav_binhluan) {
             Intent intent = new Intent(UserHome.this, UserShowComment.class);
 
             startActivity(intent);
